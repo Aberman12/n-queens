@@ -31,6 +31,7 @@
 
     _getFirstRowColumnIndexForMajorDiagonalOn: function(rowIndex, colIndex) {
       return colIndex - rowIndex;
+      var board = new Board();
     },
 
     _getFirstRowColumnIndexForMinorDiagonalOn: function(rowIndex, colIndex) {
@@ -78,13 +79,46 @@
     // --------------------------------------------------------------
     //
     // test if a specific row on this board contains a conflict
+
+    size: function() {
+      return this.get('n');
+    },
+
     hasRowConflictAt: function(rowIndex) {
-      return false; // fixme
+      //var row = this.get(rowIndex);
+      //console.log(row);
+      //iterate through each element of the row
+      var ourRow = this.rows()[rowIndex];
+      //console.log(ourRow)
+      var count = 0;
+      // console.log(this.get('n'));
+      for (var i = 0; i < ourRow.length; i++) {
+        if (ourRow[i] === 1) {
+          count++;
+        }
+        if (count > 1) {
+          return true;
+        }
+      }
+      return false;
     },
 
     // test if any rows on this board contain conflicts
     hasAnyRowConflicts: function() {
-      return false; // fixme
+      //iterate through each array in board looking for horizontal collisions;
+      // console.log('this = ', this);
+      // console.log('this.rows.length ',this.rows().length);
+      // console.log('this.rows',this.rows());
+
+      var n = this.size();
+      var stuff = false
+       for(var i = 0; i < n; i++){
+        //  console.log(rows[i]);
+         if (this.hasRowConflictAt(i)) {
+           stuff = true;
+         }
+       }
+      return stuff;
     },
 
 
@@ -94,12 +128,43 @@
     //
     // test if a specific column on this board contains a conflict
     hasColConflictAt: function(colIndex) {
-      return false; // fixme
+      //grab the matrix
+      var rows = this.rows();
+      var n = this.get('n');
+      //console.log('n', n)
+      //initialize our counter
+      var counter = 0;
+      //iterate through columns "n"
+      for (var i = 0; i < n; i++) {
+        // console.log('master', rows)
+        // console.log('our rows', rows[i])
+        // console.log('one colIndex at a time', rows[i][colIndex]);
+        //if any of the rows at colIndex = 1, increase counter
+        if (rows[i][colIndex] === 1) {
+          //console.log(rows[i][colIndex]);
+          counter++;
+        }
+        //if we find 2+ 1's, return
+        if (counter > 1) {
+          return true;
+        }
+      }
+      return false;
     },
 
     // test if any columns on this board contain conflicts
     hasAnyColConflicts: function() {
-      return false; // fixme
+
+      //get number of columns to iterate through
+      var n = this.size();
+      //var colums = []
+      //iterate through n colums
+      for(var i = 0; i < n; i++){
+        if (this.hasColConflictAt(i)){
+          return true;
+        }
+      }
+      return false;
     },
 
 
@@ -109,11 +174,42 @@
     //
     // test if a specific major diagonal on this board contains a conflict
     hasMajorDiagonalConflictAt: function(majorDiagonalColumnIndexAtFirstRow) {
-      return false; // fixme
+      //grab all the rows
+      var rows = this.rows();
+      var n = this.size();
+      //assign major key
+      var majorKey = majorDiagonalColumnIndexAtFirstRow;
+      //initialize counter (we will return if counter > 1)
+      var counter = 0;
+      //iterate through first column
+      for (var i = 0; i < n; i++) {
+
+        //iterate through columns at majorKey index to see if it = 1
+        if (rows[i][majorKey] === 1) {
+          //if it does, check the diagonal element
+          counter++;
+          //iterate through diagonal elements
+          for (var j = 1; j < n-i; j++) {
+            if (rows[j][majorKey+j] === 1) {
+              counter++;
+              if (counter > 1) {
+                return true;
+              }
+            }
+          }
+        }
+      }
+      return false;
     },
 
     // test if any major diagonals on this board contain conflicts
     hasAnyMajorDiagonalConflicts: function() {
+      var n = this.size();
+      for(var i = 0; i < n; i++){
+        if (this.hasMajorDiagonalConflictAt(i)){
+          return true;
+        }
+      }
       return false; // fixme
     },
 
