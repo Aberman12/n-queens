@@ -178,24 +178,28 @@
       var rows = this.rows();
       var n = this.size();
       //assign major key
+      console.log('tests', rows)
       var majorKey = majorDiagonalColumnIndexAtFirstRow;
       //initialize counter (we will return if counter > 1)
       var counter = 0;
       //iterate through first column
       for (var i = 0; i < n; i++) {
-
         //iterate through columns at majorKey index to see if it = 1
-        if (rows[i][majorKey] === 1) {
+        if (majorKey[i] === 1) {
+          var row = rows.indexOf(majorKey)+1;
+          var col = i+1;
           //if it does, check the diagonal element
           counter++;
-          //iterate through diagonal elements
-          for (var j = 1; j < n-i; j++) {
-            if (rows[j][majorKey+j] === 1) {
-              counter++;
-              if (counter > 1) {
-                return true;
-              }
+
+          //as long as the next element row exists, check the next element
+          while(rows[row]){
+            //if the next element is also one, we can return true
+            if(rows[row][col] === 1){
+              return true;
             }
+            //check next diagonal element by advancing row + col
+            row++;
+            col++;
           }
         }
       }
@@ -205,8 +209,9 @@
     // test if any major diagonals on this board contain conflicts
     hasAnyMajorDiagonalConflicts: function() {
       var n = this.size();
+      var grid = this.rows();
       for(var i = 0; i < n; i++){
-        if (this.hasMajorDiagonalConflictAt(i)){
+        if (this.hasMajorDiagonalConflictAt(grid[i])){
           return true;
         }
       }
